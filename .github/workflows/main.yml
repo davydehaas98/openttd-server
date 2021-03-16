@@ -1,0 +1,29 @@
+name: Deliver OpenTTD-server Docker image to Docker Hub
+
+on:
+  schedule:
+  - cron: '0 0 * * *'
+  push:
+    branches:
+    - main
+
+env:
+  DOCKER_USERNAME: davydehaas98
+  DOCKER_REPOSITORY: davydehaas98
+  DOCKER_IMAGE: openttd-server
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Push Docker Images
+      run: |
+        docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        for version in $(cat versions)
+        do
+          docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version .
+          docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version
+        done
