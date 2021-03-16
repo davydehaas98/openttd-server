@@ -28,3 +28,7 @@ jobs:
           docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version .
           docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version
         done
+        
+        version=$(head -1 versions)
+        docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest .
+        docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest
