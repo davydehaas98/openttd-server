@@ -22,13 +22,10 @@ jobs:
     - name: Push Docker Images
       run: |
         docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        
-        # version=$(head -1 versions)
-        # docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest .
-        # docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest
 
-        for version in $(cat versions)
+        for version in $(cat versions.txt | sed 's/\r$//' | od -c)
         do
+          echo $version | od -c
           docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version .
           docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version
         done
