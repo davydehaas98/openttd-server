@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 LABEL maintainer="davy.dehaas98@gmail.com"
 # Initial Versions, will change in the pipeline depending on what version is needed to build
 ARG OPENTTD_VERSION="1.10.3"
