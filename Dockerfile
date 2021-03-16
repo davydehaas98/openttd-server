@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 LABEL maintainer="davy.dehaas98@gmail.com"
 
 ARG OpenTTD_VERSION="1.10.3"
