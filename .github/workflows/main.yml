@@ -23,11 +23,21 @@ jobs:
       run: |
         docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
         
-        version=$(head -1 versions)
-        docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest .
-        docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:latest
+        version=$(head -1 stable-versions)
+        docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:stable .
+        docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:stable
 
-        for version in $(cat versions)
+        for version in $(cat stable-versions)
+        do
+          docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version .
+          docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version
+        done
+        
+        version=$(head -1 testing-versions)
+        docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:testing .
+        docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:testing
+
+        for version in $(cat testing-versions)
         do
           docker build --rm --build-arg="OPENTTD_VERSION=$version" -t ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version .
           docker push ${{ env.DOCKER_REPOSITORY }}/${{ env.DOCKER_IMAGE }}:$version

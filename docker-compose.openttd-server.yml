@@ -8,10 +8,12 @@ services:
     - PGID=${PGID}
     - PUID=${PUID}
     - TZ=${TZ}
-    # - LOADGAME=true
-    # - SAVENAME=game.sav
+    - LOADGAME=true # true, false, last-autosave, exit
+    - SAVENAME=game.sav
+    - SAVEPATH=/home/openttd/.openttd/save
+    - DEBUG=1
     volumes:
-    - /server/openttd-server/.openttd:/home/openttd/.openttd
+    - /server/openttd-server:/home/openttd
     ports:
     - 3979:3979/tcp
     - 3979:3979/udp

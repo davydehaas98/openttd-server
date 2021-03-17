@@ -1,9 +1,9 @@
 #!/bin/sh
 
-savepath="/home/openttd/.openttd/save"
-savegame="${savepath}/${savename}"
-LOADGAME_CHECK="${loadgame}x"
-loadgame=${loadgame:-'false'}
+SAVEPATH=${SAVEPATH:-"/home/openttd/.openttd/save"}
+SAVEGAME="${SAVEPATH}/${SAVENAME}"
+LOADGAME_CHECK="${LOADGAME}x"
+LOADGAME=${LOADGAME:-"false"}
 
 PUID=${PUID:-911}
 PGID=${PGID:-911}
@@ -33,15 +33,14 @@ User Home:   $(grep ${USER} /etc/passwd | cut -d':' -f6)
 # Loads the desired game, or prepare to load it next time server starts up!
 if [ ${LOADGAME_CHECK} != "x" ]; then
 
-        case ${loadgame} in
+        case ${LOADGAME} in
                 'true')
-                        if [ -f  ${savegame} ]; then
-                                echo "We are loading a save game!"
-                                echo "Lets load ${savegame}"
-                                su -l openttd -c "/usr/games/openttd -D -g ${savegame} -x -d ${DEBUG}"
+                        if [ -f  ${SAVEGAME} ]; then
+                                echo "Loading ${SAVEGAME}"
+                                su -l openttd -c "/usr/games/openttd -D -g ${SAVEGAME} -x -d ${DEBUG}"
                                 exit 0
                         else
-                                echo "${savegame} not found..."
+                                echo "${SAVEGAME} not found..."
                                 exit 0
                         fi
                 ;;
@@ -52,37 +51,37 @@ if [ ${LOADGAME_CHECK} != "x" ]; then
                 ;;
                 'last-autosave')
 
-			savegame=${savepath}/autosave/`ls -rt ${savepath}/autosave/ | tail -n1`
+			SAVEGAME=${SAVEPATH}/autosave/`ls -rt ${SAVEPATH}/autosave/ | tail -n1`
 
-			if [ -r ${savegame} ]; then
-	                        echo "Loading ${savegame}"
-        	                su -l openttd -c "/usr/games/openttd -D -g ${savegame} -x -d ${DEBUG}"
+			if [ -r ${SAVEGAME} ]; then
+	                        echo "Loading ${SAVEGAME}"
+        	                su -l openttd -c "/usr/games/openttd -D -g ${SAVEGAME} -x -d ${DEBUG}"
                 	        exit 0
 			else
-				echo "${savegame} not found..."
+				echo "${SAVEGAME} not found..."
 				exit 1
 			fi
                 ;;
                 'exit')
 
-			savegame="${savepath}/autosave/exit.sav"
+			SAVEGAME="${SAVEPATH}/autosave/exit.sav"
 
-			if [ -r ${savegame} ]; then
-	                        echo "Loading ${savegame}"
-        	                su -l openttd -c "/usr/games/openttd -D -g ${savegame} -x -d ${DEBUG}"
+			if [ -r ${SAVEGAME} ]; then
+	                        echo "Loading ${SAVEGAME}"
+        	                su -l openttd -c "/usr/games/openttd -D -g ${SAVEGAME} -x -d ${DEBUG}"
                 	        exit 0
 			else
-				echo "${savegame} not found..."
+				echo "${SAVEGAME} not found..."
 				exit 1
 			fi
                 ;;
 		*)
-			echo "ambigous loadgame (\"${loadgame}\") statement inserted."
+			echo "ambigous loadgame (\"${LOADGAME}\") statement inserted."
 			exit 1
 		;;
         esac
 else
-	echo "\$loadgame (\"${loadgame}\") not set, starting new game"
+	echo "\$loadgame (\"${LOADGAME}\") not set, starting new game"
         su -l openttd -c "/usr/games/openttd -D -x"
         exit 0
 fi
